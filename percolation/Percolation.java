@@ -1,28 +1,31 @@
 public class Percolation {
     private int[] id;
     private int neighbors[][];
-    private int side;
+    private boolean[][] openGrid;
+    private int size;
     private int[] sz;
+    private boolean isPercolate;
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
         if (n <= 0) {
-            throw new IllegalArgumentException("number of sides should be a positive integer")
+            throw new IllegalArgumentException("number of sides should be a positive integer");
         }
         id = new int[n];
         sz = new int[n];
         neighbors = new int[n][4];
-        side = n;
-        for (int i = 0; i <= n; i++) {
-            for (int j = 0; j <= n; j++) {
+        size = n;
+        openGrid = new boolean[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 var cellId = i * n + j;
                 id[cellId] = cellId;
                 sz[cellId] = 1;
                 var row = i + 1;
                 var col = j + 1;
-                var upperAdjacent = this.findAdjacent(row - 1, col);
-                var bottomAdjacent = this.findAdjacent(row + 1, col);
-                var leftAdjacent = this.findAdjacent(row, col - 1);
-                var rightAdjacent = this.findAdjacent(row, col + 1);
+                var upperAdjacent = findAdjacent(row - 1, col);
+                var bottomAdjacent = findAdjacent(row + 1, col);
+                var leftAdjacent = findAdjacent(row, col - 1);
+                var rightAdjacent = findAdjacent(row, col + 1);
                 neighbors[cellId] = new int[]{upperAdjacent, bottomAdjacent, leftAdjacent, rightAdjacent};
             }
         }
@@ -30,49 +33,74 @@ public class Percolation {
 
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
-        var isOpen = this.isOpen(row, col);
-        var cellId = this.findCellId(row, col);
+        boolean isOpen = isOpen(row, col);
+        int cellId = findCellId(row, col);
         if (!isOpen) {
-            var upperAdjacent = neighbors[cellId][0];
-            var bottomAdjacent = neighbors[cellId][1];
-            var leftAdjacent = neighbors[cellId][2];
-            var rightAdjacent = neighbors[cellId][3];
+            int upperAdjacent = neighbors[cellId][0];
+            int bottomAdjacent = neighbors[cellId][1];
+            int leftAdjacent = neighbors[cellId][2];
+            int rightAdjacent = neighbors[cellId][3];
             if (upperAdjacent != -1) {
-                this.union(cellId, upperAdjacent);
+                union(cellId, upperAdjacent);
             }
             if (bottomAdjacent != -1) {
-                this.union(cellId, bottomAdjacent);
+                union(cellId, bottomAdjacent);
             }
             if (leftAdjacent != -1) {
-                this.union(cellId, leftAdjacent);
+                union(cellId, leftAdjacent);
             }
             if (rightAdjacent != -1) {
-                this.union(cellId, rightAdjacent);
+                union(cellId, rightAdjacent);
             }
         }
     }
 
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
-
+        return openGrid[row][col];
     }
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
-
+        boolean isFull = false;
+        int cellId = this.findCellId(row, col);
+        for (int i = 0; i < size; i++) {
+            if (id[cellId] == id[i]) {
+                isFull = true;
+                break;
+            }
+        }
+        return isFull;
     }
 
     // returns the number of open sites
-    public int numberOfOpenSites() {}
+    public int numberOfOpenSites() {
+        int counter = 0;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if(openGrid[i][j]) {
+                    counter++;
+                }
+            }
+        }
+        return counter;
+    }
 
     // does the system percolate?
     public boolean percolates() {
-
-    }
-
-    // test client (optional)
-    public static void main(String[] args) {
-
+        if (isPercolate) {
+            return true;
+        }
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                int bottomCellId = this.findCellId(size - 1, j);
+                if (id[i] == id[bottomCellId]) {
+                    isPercolate = true;
+                    break;
+                }
+            }
+        }
+        return isPercolate;
     }
 
     private void union(int i, int j) {
@@ -97,14 +125,19 @@ public class Percolation {
     }
 
     private int findAdjacent(int row, int col) {
-        if (row - 1 < 0 || row - 1 > side || col - 1 < 0 || col - 1 > side) {
+        if (row - 1 < 0 || row - 1 > size || col - 1 < 0 || col - 1 > size) {
             return -1;
         } else {
-            return this.findCellId(row, col);
+            return findCellId(row, col);
         }
     }
 
     private int findCellId(int row, int col) {
-        return (row - 1) * side + col - 1;
+        return (row - 1) * size + col - 1;
+    }
+
+    // test client (optional)
+    public static void main(String[] args) {
+
     }
 }
