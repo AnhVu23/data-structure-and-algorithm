@@ -22,13 +22,14 @@ public class Percolation {
         full = new WeightedQuickUnionUF(gridSquared + 1);
         virtualTop = gridSquared;
         virtualBottom = gridSquared + 1;
+        openSites = 0;
     }
 
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
-        cellValid(row, col);
+        testSites(row, col);
         boolean isOpen = isOpen(row, col);
-        int cellId = findCellId(row - 1, col - 1);
+        int cellId = findCellId(row, col) - 1;
         if (!isOpen) {
             openGrid[row - 1][col - 1] = true;
             openSites++;
@@ -37,41 +38,40 @@ public class Percolation {
                 full.union(virtualTop, cellId);
             } else if (row == size) {
                 grid.union(virtualBottom, cellId);
-            } else {
-                int upperAdjacent = findAdjacent(row - 2, col - 1);
-                int bottomAdjacent = findAdjacent(row, col - 1);
-                int leftAdjacent = findAdjacent(row - 1, col - 2);
-                int rightAdjacent = findAdjacent(row - 1, col);
-                if (upperAdjacent != -1) {
-                    grid.union(cellId, upperAdjacent);
-                    full.union(cellId, upperAdjacent);
-                }
-                if (bottomAdjacent != -1) {
-                    grid.union(cellId, bottomAdjacent);
-                    full.union(cellId, bottomAdjacent);
-                }
-                if (leftAdjacent != -1) {
-                    grid.union(cellId, leftAdjacent);
-                    full.union(cellId, leftAdjacent);
-                }
-                if (rightAdjacent != -1) {
-                    grid.union(cellId, rightAdjacent);
-                    full.union(cellId, rightAdjacent);
-                }
+            }
+            if (cellValid(row - 1, col) && isOpen(row - 1, col)) {
+                int upperAdjacent = findAdjacent(row - 1, col) - 1;
+                grid.union(cellId, upperAdjacent);
+                full.union(cellId, upperAdjacent);
+            }
+            if (cellValid(row + 1, col) && isOpen(row + 1, col)) {
+                int bottomAdjacent = findAdjacent(row + 1, col) - 1;
+                grid.union(cellId, bottomAdjacent);
+                full.union(cellId, bottomAdjacent);
+            }
+            if (cellValid(row, col - 1) && isOpen(row, col - 1)) {
+                int leftAdjacent = findAdjacent(row, col - 1) - 1;
+                grid.union(cellId, leftAdjacent);
+                full.union(cellId, leftAdjacent);
+            }
+            if (cellValid(row, col + 1) && isOpen(row, col + 1)) {
+                int rightAdjacent = findAdjacent(row, col + 1) - 1;
+                grid.union(cellId, rightAdjacent);
+                full.union(cellId, rightAdjacent);
             }
         }
     }
 
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
-        cellValid(row, col);
+        testSites(row, col);
         return openGrid[row - 1][col - 1];
     }
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
-        cellValid(row, col);
-        return full.find(findCellId(row - 1, col - 1)) == grid.find(virtualTop);
+        testSites(row, col);
+        return full.connected(virtualTop, findCellId(row, col) - 1);
     }
 
     // returns the number of open sites
@@ -81,39 +81,30 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
-        return grid.find(virtualTop) == grid.find(virtualBottom);
+        return grid.connected(virtualTop, virtualBottom);
     }
 
     private int findAdjacent(int row, int col) {
-        if (row < 0 || row >= size || col < 0 || col >= size) {
-            return -1;
-        } else {
-            return findCellId(row, col);
-        }
+        return findCellId(row, col);
     }
 
     private int findCellId(int row, int col) {
-        return row * size + col;
+        return (row - 1) * size + col;
     }
 
-    private int cellValid(int row, int col) {
-        if (row < 1 || row >= size * size || col < 1 || col >= size * size) {
+    private void testSites(int row, int col) {
+        if (!cellValid(row, col)) {
             throw new IllegalArgumentException("");
         }
-        return 1;
+    }
+
+    private boolean cellValid(int row, int col) {
+        int shiftRow = row - 1;
+        int shiftCol = col - 1;
+        return shiftRow >= 0 && shiftCol >= 0 && shiftRow < size && shiftCol < size;
     }
 
     public static void main(String[] args) {
-        Percolation perc = new Percolation(5);
-        perc.open(1, 1);
-        System.out.println(perc.isOpen(1, 1));
-        System.out.println(perc.isFull(1, 1));
-        System.out.println(perc.isFull(2, 1));
-        System.out.println(perc.isOpen(4, 5));
-        perc.open(2, 2);
-        System.out.println(perc.percolates());
-        perc.open(2, 1);
-        System.out.println(perc.isFull(5, 1));
-        System.out.println(perc.percolates());
+
     }
 }

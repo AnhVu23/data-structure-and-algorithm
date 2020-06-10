@@ -14,16 +14,13 @@ public class PercolationStats {
         results = new double[trials];
         for (int i = 0; i < trials; i++) {
             Percolation perc = new Percolation(n);
-            double openSquares = 0.0;
             while (!perc.percolates()) {
-                int randomRow = StdRandom.uniform(1, n);
-                int randomCol = StdRandom.uniform(1, n);
-                if (!perc.isOpen(randomRow, randomCol)) {
-                    perc.open(randomRow, randomCol);
-                    openSquares++;
-                }
+                int randomRow = StdRandom.uniform(1, n + 1);
+                int randomCol = StdRandom.uniform(1, n + 1);
+                perc.open(randomRow, randomCol);
             }
-            results[i] = openSquares / n * n;
+            int openSquares = perc.numberOfOpenSites();
+            results[i] = (double) openSquares / n * n;
         }
         this.trials = trials;
     }
