@@ -32,6 +32,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // add the item
     public void enqueue(Item item) {
+        if (item == null) {
+            throw new IllegalArgumentException("Item should not be null");
+        }
         if (n == array.length) {
             fixedCapacityStack(2 * array.length);
         }
@@ -54,6 +57,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // return a random item (but do not remove it)
     public Item sample() {
+        checkIfEmpty();
         int randomPos = StdRandom.nextInt(n);
         return array[randomPos];
     }
@@ -83,13 +87,24 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
 
         public Item next() {
+            if (i == 0) {
+                throw new NoSuchElementException("Array is end");
+            }
             return array[--i];
         }
     }
 
     // unit testing (required)
     public static void main(String[] args) {
-
+        RandomizedQueue<Integer> queue = new RandomizedQueue<>();
+        queue.enqueue(3);
+        queue.enqueue(5);
+        queue.enqueue(8);
+        System.out.println(queue.dequeue());
+        System.out.println(queue.sample());
+        System.out.println(queue.isEmpty());
+        System.out.println(queue.size());
+        queue.iterator();
     }
 
 }
