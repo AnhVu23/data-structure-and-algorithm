@@ -8,7 +8,7 @@ public class Permutation {
             deque.addLast(StdIn.readString());
         }
         for (int i = 0; i < k; i++) {
-            deque.removeFirst();
+            System.out.println(deque.removeFirst());
         }
     }
 }
