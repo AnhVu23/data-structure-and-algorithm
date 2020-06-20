@@ -76,21 +76,31 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     private class ReverseArrayIterator implements Iterator<Item> {
-        private int i = n;
+        private int i;
+        private int[] randomIndices;
+
+        public ReverseArrayIterator() {
+            i = 0;
+            randomIndices = new int[n];
+            for (int j = 0; j < n; j++) {
+                randomIndices[j] = j;
+            }
+            StdRandom.shuffle(randomIndices);
+        }
 
         public boolean hasNext() {
-            return i > 0;
+            return i < n;
         }
 
         public void remove() {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("Function is not supported");
         }
 
         public Item next() {
-            if (i == 0) {
+            if (hasNext()) {
                 throw new NoSuchElementException("Array is end");
             }
-            return array[--i];
+            return array[randomIndices[i++]];
         }
     }
 
@@ -99,6 +109,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         RandomizedQueue<Integer> queue = new RandomizedQueue<>();
         queue.enqueue(3);
         queue.enqueue(5);
+        queue.enqueue(8);
+        queue.enqueue(8);
         queue.enqueue(8);
         queue.dequeue();
         queue.sample();
