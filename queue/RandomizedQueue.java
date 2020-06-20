@@ -38,8 +38,15 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         if (n == array.length) {
             fixedCapacityStack(2 * array.length);
         }
+        if (n == 0) {
+            array[n++] = item;
+        } else {
+            int randomPos = StdRandom.uniform(n);
+            Item randomItem = array[randomPos];
+            array[randomPos] = item;
+            array[n++] = randomItem;
+        }
         ;
-        array[n++] = item;
     }
 
     // remove and return a random item
@@ -97,7 +104,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
 
         public Item next() {
-            if (hasNext()) {
+            if (!hasNext()) {
                 throw new NoSuchElementException("Array is end");
             }
             return array[randomIndices[i++]];
@@ -112,10 +119,10 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         queue.enqueue(8);
         queue.enqueue(8);
         queue.enqueue(8);
-        queue.dequeue();
-        queue.sample();
-        queue.isEmpty();
-        queue.size();
+        System.out.println(queue.dequeue());
+        System.out.println(queue.sample());
+        System.out.println(queue.isEmpty());
+        System.out.println(queue.size());
         queue.iterator();
     }
 

@@ -100,6 +100,9 @@ public class Deque<Item> implements Iterable<Item> {
         }
 
         public Item next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("There is no next element");
+            }
             Item item = current.item;
             current = current.next;
             return item;
@@ -132,9 +135,9 @@ public class Deque<Item> implements Iterable<Item> {
         newDeq.removeLast();
         newDeq.addFirst(5);
         newDeq.removeFirst();
-        newDeq.size();
-        newDeq.isEmpty();
-        newDeq.removeFirst();
+        System.out.println(newDeq.size());
+        System.out.println(newDeq.isEmpty());
+        System.out.println(newDeq.removeFirst());
         newDeq.iterator();
     }
 
