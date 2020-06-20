@@ -19,7 +19,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     // If empty, throw error
-    public void checkIfEmpty() {
+    private void checkIfEmpty() {
         if (isEmpty()) {
             throw new NoSuchElementException("Array is empty");
         }
@@ -48,7 +48,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         if (n == array.length / 4) {
             fixedCapacityStack(array.length / 2);
         }
-        int randomPos = StdRandom.nextInt(n);
+        int randomPos = StdRandom.uniform(n);
         Item item = array[randomPos];
         array[randomPos] = array[--n];
         array[n] = null;
@@ -58,7 +58,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     // return a random item (but do not remove it)
     public Item sample() {
         checkIfEmpty();
-        int randomPos = StdRandom.nextInt(n);
+        int randomPos = StdRandom.uniform(n);
         return array[randomPos];
     }
 
@@ -67,7 +67,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         return new ReverseArrayIterator();
     }
 
-    public void fixedCapacityStack(int capacity) {
+    private void fixedCapacityStack(int capacity) {
         Item[] temp = (Item[]) new Object[capacity];
         for (int i = 0; i < n; i++) {
             temp[i] = array[i];
@@ -100,10 +100,10 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         queue.enqueue(3);
         queue.enqueue(5);
         queue.enqueue(8);
-        System.out.println(queue.dequeue());
-        System.out.println(queue.sample());
-        System.out.println(queue.isEmpty());
-        System.out.println(queue.size());
+        queue.dequeue();
+        queue.sample();
+        queue.isEmpty();
+        queue.size();
         queue.iterator();
     }
 
