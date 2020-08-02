@@ -1,30 +1,20 @@
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BruteCollinearPoints {
-    private int n;
     private Point[] points;
+    private int n;
 
     // finds all line segments containing 4 points
     public BruteCollinearPoints(Point[] points) {
         if (points == null) {
             throw new IllegalArgumentException("Point array should not be null");
         }
-        boolean duplicated = false;
-        for (int i = 0; i < points.length - 1; i++) {
-            if (points[i] == null) {
-                throw new IllegalArgumentException("Point should not be null");
-            }
-            for (int j = i + 1; j < points.length; j++) {
-                if (points[i].compareTo(points[j]) == 0) {
-                    duplicated = true;
-                }
-            }
-        }
-        if (duplicated) {
-            throw new IllegalArgumentException("Duplicated points are not allowed");
-        }
+        checkNullEntries(points);
+        Arrays.sort(points);
+        checkDuplicatedEntries(points);
         this.points = points;
-        n = 0;
+        this.n = 0;
     }
 
     public int numberOfSegments() {
@@ -32,29 +22,20 @@ public class BruteCollinearPoints {
     }    // the number of line segments
 
     public LineSegment[] segments() {
-        Double[] slopeArray = new Double[points.length - 1];
-        LineSegment[] lineSegments = new LineSegment[points.length];
-        Point origin = points[0];
-        for (int i = 1; i < points.length; i++) {
-            double slopeToOrigin = origin.slopeTo(points[i]);
-            slopeArray[i - 1] = slopeToOrigin;
-        }
-        Comparator<Point> pointOrder = origin.slopeOrder();
-        for (int i = 1; i < points.length; i++) {
-            for (int j = i; j > 0; j--) {
-                if (pointOrder.compare(points[j], points[j - 1]) < 0) {
-                    exchange(points, j, j - 1);
-                    exchangeSlope(slopeArray, j, j - 1);
-                }
-            }
-        }
-        for (int u = 0; u < slopeArray.length; u += 3) {
-            if (slopeArray[u].equals(slopeArray[u + 1]) && slopeArray[u + 1].equals(slopeArray[u + 2])) {
-                lineSegments[u / 3] = new LineSegment(origin, points[u + 2]);
-                n++;
-            }
-        }
-        return lineSegments;
+        Double[] slopeArray = new Double[points.length];
+        ArrayList<LineSegment> segmentsList = new ArrayList<LineSegment>();
+        for (int i = 0; i < (points.length - 3); ++i)
+            for (int j = i + 1; j < (points.length - 2); ++j)
+                for (int k = j + 1; k < (points.length - 1); ++k)
+                    for (int l = k + 1; l < (points.length); ++l) {
+                        if (points[i].slopeTo(points[j]) == points[i].slopeTo(points[l]) &&
+                                points[i].slopeTo(points[j]) == points[i].slopeTo(points[k])) {
+                            LineSegment tempLineSegment = new LineSegment(points[i], points[l]);
+                            if (!segmentsList.contains(tempLineSegment))
+                                segmentsList.add(tempLineSegment);
+                        }
+                    }
+        return segmentsList.toArray(new LineSegment[segmentsList.size()]);
     }              // the line segments
 
     private void exchange(Point[] a, int i, int j) {
@@ -69,13 +50,32 @@ public class BruteCollinearPoints {
         a[j] = old;
     }
 
+    private void checkNullEntries(Point[] points) {
+        for (int i = 0; i < points.length - 1; i++) {
+            if (points[i] == null) {
+                throw new java.lang.NullPointerException("One of the point in points array is null");
+            }
+        }
+    }
+
+    private void checkDuplicatedEntries(Point[] points) {
+        for (int i = 1; i < points.length - 1; i++) {
+            if (points[i].compareTo(points[i - 1]) == 0) {
+                throw new IllegalArgumentException("Duplicated entries in given points");
+            }
+        }
+    }
+
     public static void main(String[] args) {
         /* YOUR CODE HERE */
         Point point1 = new Point(1, 1);
         Point point2 = new Point(2, 2);
         Point point3 = new Point(3, 3);
         Point point4 = new Point(4, 4);
-        Point[] array = new Point[]{point1, point2, point3, point4};
+        Point point5 = new Point(2, 3);
+        Point point6 = new Point(1, 2);
+        Point point7 = new Point(1, 6);
+        Point[] array = new Point[]{point1, point2, point3, point4, point5, point6, point7};
         BruteCollinearPoints collinearPoints = new BruteCollinearPoints(array);
         collinearPoints.segments();
         System.out.println(collinearPoints.numberOfSegments());
