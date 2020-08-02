@@ -1,6 +1,4 @@
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
 
 public class BruteCollinearPoints {
     private int n;
@@ -11,13 +9,18 @@ public class BruteCollinearPoints {
         if (points == null) {
             throw new IllegalArgumentException("Point array should not be null");
         }
-        for (int i = 0; i < points.length; i++) {
+        boolean duplicated = false;
+        for (int i = 0; i < points.length - 1; i++) {
             if (points[i] == null) {
                 throw new IllegalArgumentException("Point should not be null");
             }
+            for (int j = i + 1; j < points.length; j++) {
+                if (points[i].compareTo(points[j]) == 0) {
+                    duplicated = true;
+                }
+            }
         }
-        HashSet<Point> pointSet = new HashSet<Point>(Arrays.asList(points));
-        if (pointSet.size() != points.length) {
+        if (duplicated) {
             throw new IllegalArgumentException("Duplicated points are not allowed");
         }
         this.points = points;
@@ -61,7 +64,7 @@ public class BruteCollinearPoints {
     }
 
     private void exchangeSlope(Double[] a, int i, int j) {
-        Double old = a[i];
+        double old = a[i];
         a[i] = a[j];
         a[j] = old;
     }

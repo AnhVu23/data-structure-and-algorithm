@@ -1,13 +1,70 @@
-public class FastCollinearPoints {
-    public FastCollinearPoints(Point[] points) {
+import java.util.Comparator;
 
+public class FastCollinearPoints {
+    private int n;
+    private Point[] points;
+
+    public FastCollinearPoints(Point[] points) {
+        if (points == null) {
+            throw new IllegalArgumentException("Point array should not be null");
+        }
+        boolean duplicated = false;
+        for (int i = 0; i < points.length - 1; i++) {
+            if (points[i] == null) {
+                throw new IllegalArgumentException("Point should not be null");
+            }
+            for (int j = i + 1; j < points.length; j++) {
+                if (points[i].compareTo(points[j]) == 0) {
+                    duplicated = true;
+                }
+            }
+        }
+        if (duplicated) {
+            throw new IllegalArgumentException("Duplicated points are not allowed");
+        }
+        this.points = points;
+        n = 0;
     }     // finds all line segments containing 4 or more points
 
     public int numberOfSegments() {
-
+        return n;
     }     // the number of line segments
 
     public LineSegment[] segments() {
-
+        Double[] slopeArray = new Double[points.length - 1];
+        LineSegment[] lineSegments = new LineSegment[points.length];
+        Point origin = points[0];
+        for (int i = 1; i < points.length; i++) {
+            double slopeToOrigin = origin.slopeTo(points[i]);
+            slopeArray[i - 1] = slopeToOrigin;
+        }
+        Comparator<Point> pointOrder = origin.slopeOrder();
+        for (int i = 1; i < points.length; i++) {
+            for (int j = i; j > 0; j--) {
+                if (pointOrder.compare(points[j], points[j - 1]) < 0) {
+                    exchange(points, j, j - 1);
+                    exchangeSlope(slopeArray, j, j - 1);
+                }
+            }
+        }
+        for (int u = 0; u < slopeArray.length; u += 3) {
+            if (slopeArray[u].equals(slopeArray[u + 1]) && slopeArray[u + 1].equals(slopeArray[u + 2])) {
+                lineSegments[u / 3] = new LineSegment(origin, points[u + 2]);
+                n++;
+            }
+        }
+        return lineSegments;
     }         // the line segments
+
+    private void exchange(Point[] a, int i, int j) {
+        Point old = a[i];
+        a[i] = a[j];
+        a[j] = old;
+    }
+
+    private void exchangeSlope(Double[] a, int i, int j) {
+        double old = a[i];
+        a[i] = a[j];
+        a[j] = old;
+    }
 }
