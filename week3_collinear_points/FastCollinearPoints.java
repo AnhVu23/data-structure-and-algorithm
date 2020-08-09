@@ -2,49 +2,38 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FastCollinearPoints {
-    private int n;
-    private Point[] points;
+    private LineSegment[] segments;
 
     public FastCollinearPoints(Point[] points) {
         if (points == null) {
             throw new IllegalArgumentException("Point array should not be null");
         }
         checkNullEntries(points);
-        checkNullEntries(points);
         Point[] pointsCopy = Arrays.copyOf(points, points.length);
-        Arrays.sort(pointsCopy);
         checkDuplicatedEntries(pointsCopy);
-        this.points = points;
-        n = 0;
-    }     // finds all line segments containing 4 or more points
-
-    public int numberOfSegments() {
-        return n;
-    }     // the number of line segments
-
-    public LineSegment[] segments() {
+        Arrays.sort(pointsCopy);
         ArrayList<LineSegment> segmentsList = new ArrayList<LineSegment>();
-        for (int i = 0; i < points.length; ++i) {
-            Point origin = points[i];
-            Arrays.sort(points);
-            Arrays.sort(points, origin.slopeOrder());
+        for (int i = 0; i < pointsCopy.length; ++i) {
+            Point origin = pointsCopy[i];
+            Arrays.sort(pointsCopy);
+            Arrays.sort(pointsCopy, origin.slopeOrder());
             int count = 1;
             Point lineBeginning = null;
-            for (int j = 0; j < points.length - 1; ++j) {
-                if (points[j].slopeTo(origin) == points[j + 1].slopeTo(origin)) {
+            for (int j = 0; j < pointsCopy.length - 1; ++j) {
+                if (pointsCopy[j].slopeTo(origin) == pointsCopy[j + 1].slopeTo(origin)) {
                     count++;
                     if (count == 2) {
-                        lineBeginning = points[j];
+                        lineBeginning = pointsCopy[j];
                         count++;
-                    } else if (count >= 4 && j + 1 == points.length - 1) {
+                    } else if (count >= 4 && j + 1 == pointsCopy.length - 1) {
                         if (lineBeginning.compareTo(origin) > 0) {
-                            segmentsList.add(new LineSegment(origin, points[j + 1]));
+                            segmentsList.add(new LineSegment(origin, pointsCopy[j + 1]));
                         }
                         count = 1;
                     }
                 } else if (count >= 4) {
                     if (lineBeginning.compareTo(origin) > 0) {
-                        segmentsList.add(new LineSegment(origin, points[j]));
+                        segmentsList.add(new LineSegment(origin, pointsCopy[j]));
                     }
                     count = 1;
                 } else {
@@ -52,32 +41,28 @@ public class FastCollinearPoints {
                 }
             }
         }
-        return segmentsList.toArray(new LineSegment[segmentsList.size()]);
+        segments = segmentsList.toArray(new LineSegment[segmentsList.size()]);
+    }     // finds all line segments containing 4 or more points
+
+    public int numberOfSegments() {
+        return segments.length;
+    }     // the number of line segments
+
+    public LineSegment[] segments() {
+        return Arrays.copyOf(segments, segments.length);
     }         // the line segments
 
-    private void exchange(Point[] a, int i, int j) {
-        Point old = a[i];
-        a[i] = a[j];
-        a[j] = old;
-    }
-
-    private void exchangeSlope(Double[] a, int i, int j) {
-        double old = a[i];
-        a[i] = a[j];
-        a[j] = old;
-    }
-
     private void checkNullEntries(Point[] points) {
-        for (int i = 0; i < points.length - 1; i++) {
+        for (int i = 0; i <= points.length - 1; i++) {
             if (points[i] == null) {
-                throw new java.lang.NullPointerException("One of the point in points array is null");
+                throw new IllegalArgumentException("One of the point in points array is null");
             }
         }
     }
 
     private void checkDuplicatedEntries(Point[] points) {
         for (int i = 0; i < points.length - 1; i++) {
-            if (points[i].compareTo(points[i - 1]) == 0) {
+            if (points[i].compareTo(points[i + 1]) == 0) {
                 throw new IllegalArgumentException("Duplicated entries in given points");
             }
         }

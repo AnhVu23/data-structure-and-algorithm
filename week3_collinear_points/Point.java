@@ -90,8 +90,10 @@ public class Point implements Comparable<Point> {
             throw new NullPointerException("Point should not be null");
         }
         if (this.y < that.y) return -1;
-        if (this.y > that.y) return 1;
-        return Integer.compare(this.x, that.x);
+        else if (this.y > that.y) return 1;
+        else {
+            return this.x - that.x;
+        }
     }
 
     /**
