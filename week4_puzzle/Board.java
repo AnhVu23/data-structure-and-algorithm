@@ -11,12 +11,13 @@ public class Board {
     // create a board from an n-by-n array of board,
     // where board[row][col] = tile at (row, col)
     public Board(int[][] board) {
+        this.dimensions = board.length;
+        this.board = new int[dimensions][dimensions];
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
                 this.board[i][j] = board[i][j];
             }
         }
-        this.dimensions = board.length;
     }
 
     // string representation of this board
@@ -24,7 +25,7 @@ public class Board {
         String tileToString = "";
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
-                tileToString = tileToString + board[i][j];
+                tileToString = tileToString + " " + board[i][j];
             }
             tileToString = tileToString + "\n";
         }
@@ -41,7 +42,7 @@ public class Board {
         int numberOfboard = 0;
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
-                if (goal[i][j] == board[i][j]) {
+                if (goal[i][j] != board[i][j]) {
                     numberOfboard++;
                 }
             }
@@ -175,7 +176,7 @@ public class Board {
     public static void main(String[] args) {
         int[][] array = {{1, 5, 3}, {4, 2, 6}, {0, 7, 8}};
         Board testBoard = new Board(array);
-        System.out.println(testBoard.twin().toString());
+        System.out.println(testBoard.toString());
         System.out.println(testBoard.dimension());
         System.out.println(testBoard.hamming());
         System.out.println(testBoard.manhattan());
