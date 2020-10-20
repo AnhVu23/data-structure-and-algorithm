@@ -174,7 +174,7 @@ public class Board {
 
     // unit testing (not graded)
     public static void main(String[] args) {
-        int[][] array = {{1, 5, 3}, {4, 2, 6}, {0, 7, 8}};
+        int[][] array = {{1, 5, 2}, {4, 7, 6}, {0, 3, 8}};
         Board testBoard = new Board(array);
         System.out.println(testBoard.toString());
         System.out.println(testBoard.dimension());
