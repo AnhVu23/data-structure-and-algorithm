@@ -4,17 +4,15 @@ import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
-    private int moves;
-    private int dimensions;
-    private Board initial;
-    private MinPQ<Node> boardList;
-    private MinPQ<Node> boardListTwin;
+    private final Board initial;
+    private final MinPQ<Node> boardList;
+    private final MinPQ<Node> boardListTwin;
 
     private class Node implements Comparable<Node> {
-        private Board board;
-        private int moves;
-        private int priority;
-        private Node prev;
+        private final Board board;
+        private final int moves;
+        private final int priority;
+        private final Node prev;
 
         public Node(Board board, int moves, Node prev) {
             this.board = board;
@@ -34,7 +32,6 @@ public class Solver {
             throw new IllegalArgumentException("Board must be not null");
         }
         this.initial = initial;
-        this.dimensions = initial.dimension();
         Node minNode;
         Node minNodeTwin;
         boardList = new MinPQ<Node>();

@@ -1,12 +1,12 @@
 import edu.princeton.cs.algs4.StdRandom;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Board {
-    private int[][] board;
-    private int dimensions;
-    private int[][] goal = {{1, 2, 3}, {4, 5, 6}, {7, 8, 0}};
+    private final int[][] board;
+    private final int dimensions;
 
     // create a board from an n-by-n array of board,
     // where board[row][col] = tile at (row, col)
@@ -42,7 +42,7 @@ public class Board {
         int numberOfboard = 0;
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
-                if (goal[i][j] != board[i][j]) {
+                if (board[i][j] != 0 && ((i == dimensions - 1 && j == dimensions - 1 && board[i][j] != 0) || (board[i][j] != i * dimensions + j + 1))) {
                     numberOfboard++;
                 }
             }
@@ -55,7 +55,7 @@ public class Board {
         int manhattanDistance = 0;
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
-                if (goal[i][j] != board[i][j]) {
+                if (board[i][j] != 0 && ((i == dimensions - 1 && j == dimensions - 1 && board[i][j] != 0) || (board[i][j] != i * dimensions + j + 1))) {
                     int correctRow = transformboardToRow(board[i][j]);
                     int correctCol = transformboardToColumn(board[i][j], correctRow);
                     manhattanDistance = manhattanDistance + Math.abs(i + 1 - correctRow) + Math.abs(j + 1 - correctCol);
@@ -67,29 +67,30 @@ public class Board {
 
     // is this board the goal board?
     public boolean isGoal() {
-        return this.equals(goal);
+        boolean isEqual = true;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                if ((i == dimensions - 1 && j == dimensions - 1 && board[i][j] != 0) || (board[i][j] != i * dimensions + j + 1)) {
+                    isEqual = false;
+                }
+            }
+        }
+        return isEqual;
     }
 
     // does this board equal y?
     public boolean equals(Object y) {
         if (y == null) return false;
         if (y.getClass() != this.getClass()) return false;
-        return toString().equals(((Board) y).toString());
+        Board that = (Board) y;
+        return Arrays.deepEquals(this.board, that.board);
     }
 
     // all neighboring boards
     public Iterable<Board> neighbors() {
         List<Board> q = new ArrayList<Board>();
-        int row = 0;
-        int col = 0;
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board.length; j++) {
-                if (goal[i][j] == 0) {
-                    row = i;
-                    col = j;
-                }
-            }
-        }
+        int row = dimensions - 1;
+        int col = dimensions - 1;
         if (col > 0) {
             int[][] leftBoard = this.cloneBoard();
             exch(leftBoard, row, col, row, col - 1);
@@ -141,16 +142,12 @@ public class Board {
         return a;
     }
 
-    private int calculatePosition(int row, int col) {
-        return board.length * (row - 1) + col;
-    }
-
     private int transformboardToRow(int tile) {
         int cloneTile = tile;
         if (tile == 0) {
             cloneTile = board.length * board.length;
         }
-        int row = cloneTile / (board.length) + 1;
+        int row = Math.round(cloneTile / dimensions);
         return row;
     }
 
@@ -159,7 +156,7 @@ public class Board {
         if (tile == 0) {
             cloneTile = board.length * board.length;
         }
-        return cloneTile - board.length * (row - 1);
+        return cloneTile - dimensions * row - 1;
     }
 
     private int[][] cloneBoard() {
@@ -174,10 +171,9 @@ public class Board {
 
     // unit testing (not graded)
     public static void main(String[] args) {
-        int[][] array = {{1, 5, 2}, {4, 7, 6}, {0, 3, 8}};
+        int[][] array = {{0, 1, 3}, {4, 2, 5}, {7, 8, 6}};
         Board testBoard = new Board(array);
         System.out.println(testBoard.toString());
-        System.out.println(testBoard.dimension());
         System.out.println(testBoard.hamming());
         System.out.println(testBoard.manhattan());
     }
