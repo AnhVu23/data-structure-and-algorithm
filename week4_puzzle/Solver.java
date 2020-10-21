@@ -1,20 +1,33 @@
+import edu.princeton.cs.algs4.MinPQ;
+
 public class Solver {
+    private int moves;
+    private MinPQ<Board> boardList;
 
     // find a solution to the initial board (using the A* algorithm)
     public Solver(Board initial) {
         if (initial == null) {
             throw new IllegalArgumentException("Board must be not null");
         }
+        boardList.insert(initial);
     }
 
     // is the initial board solvable? (see below)
-    public boolean isSolvable()
+    public boolean isSolvable() {
+    }
 
     // min number of moves to solve initial board; -1 if unsolvable
-    public int moves()
+    public int moves() {
+        return moves;
+    }
 
     // sequence of boards in a shortest solution; null if unsolvable
-    public Iterable<Board> solution()
+    public Iterable<Board> solution() {
+        if (isSolvable()) {
+            return boardList;
+        }
+        return null;
+    }
 
     // test client (see below)
     public static void main(String[] args) {
