@@ -1,12 +1,14 @@
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Stack;
+import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
     private int moves;
     private int dimensions;
     private Board initial;
-    private MinPQ<Board> boardList;
-    private MinPQ<Board> boardListTwin;
+    private MinPQ<Node> boardList;
+    private MinPQ<Node> boardListTwin;
 
     private class Node implements Comparable<Node> {
         private Board board;
@@ -21,7 +23,7 @@ public class Solver {
             this.prev = prev;
         }
 
-        public int compareTo(SearchNode that) {
+        public int compareTo(Node that) {
             return (this.priority - that.priority);
         }
     }
@@ -32,22 +34,22 @@ public class Solver {
             throw new IllegalArgumentException("Board must be not null");
         }
         this.initial = initial;
-        this.dimensions = initial.dimensions();
+        this.dimensions = initial.dimension();
         Node minNode;
         Node minNodeTwin;
         boardList = new MinPQ<Node>();
         boardListTwin = new MinPQ<Node>();
         boardList.insert(new Node(initial, 0, null));
         boardListTwin.insert(new Node(initial.twin(), 0, null));
-        while (!boardList.min().isGoal() && !boardListTwin.min().isGoal()) {
+        while (!boardList.min().board.isGoal() && !boardListTwin.min().board.isGoal()) {
             minNode = boardList.min();
             minNodeTwin = boardListTwin.min();
             boardList.delMin();
             boardListTwin.delMin();
-            for (Board board : minNode.neighbors()) {
+            for (Board board : minNode.board.neighbors()) {
                 boardList.insert(new Node(board, minNode.moves + 1, minNode));
             }
-            for (Board board : boardListTwin.min().neighbors()) {
+            for (Board board : minNodeTwin.board.neighbors()) {
                 boardListTwin.insert(new Node(board, minNodeTwin.moves + 1, minNodeTwin));
             }
         }
@@ -102,6 +104,4 @@ public class Solver {
                 StdOut.println(board);
         }
     }
-}
-
 }
