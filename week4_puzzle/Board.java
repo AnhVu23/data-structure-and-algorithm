@@ -76,8 +76,11 @@ public class Board {
         boolean isEqual = true;
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
-                if ((i == dimensions - 1 && j == dimensions - 1 && board[i][j] != 0) && (board[i][j] != i * dimensions + j + 1)) {
-                    isEqual = false;
+                if (i == dimensions - 1 && j == dimensions - 1 && board[i][j] != 0) {
+                    return false;
+                }
+                if (board[i][j] != i * dimensions + j + 1) {
+                    return false;
                 }
             }
         }
@@ -86,6 +89,7 @@ public class Board {
 
     // does this board equal y?
     public boolean equals(Object y) {
+        if (y == this) return true;
         if (y == null) return false;
         if (y.getClass() != this.getClass()) return false;
         Board that = (Board) y;
@@ -168,7 +172,7 @@ public class Board {
 
     // unit testing (not graded)
     public static void main(String[] args) {
-        int[][] array = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 0}};
+        int[][] array = {{1, 2, 3}, {4, 6, 5}, {7, 8, 0}};
         Board testBoard = new Board(array);
         StdOut.println(testBoard.isGoal());
         System.out.println(testBoard.toString());
