@@ -56,9 +56,14 @@ public class Board {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
                 if (board[i][j] != 0 && ((i == dimensions - 1 && j == dimensions - 1 && board[i][j] != 0) || (board[i][j] != i * dimensions + j + 1))) {
-                    int correctRow = transformboardToRow(board[i][j]);
-                    int correctCol = transformboardToColumn(board[i][j], correctRow);
-                    manhattanDistance = manhattanDistance + Math.abs(i + 1 - correctRow) + Math.abs(j + 1 - correctCol);
+                    int row, col;
+                    if (board[i][j] % dimensions == 0) {
+                        row = Math.round(board[i][j] / dimensions) - 1;
+                    } else {
+                        row = Math.round(board[i][j] / dimensions);
+                    }
+                    col = board[i][j] - dimensions * row - 1;
+                    manhattanDistance = manhattanDistance + Math.abs(i - row) + Math.abs(j - col);
                 }
             }
         }
@@ -140,23 +145,6 @@ public class Board {
         a[row1][col1] = a[row2][col2];
         a[row2][col2] = temp;
         return a;
-    }
-
-    private int transformboardToRow(int tile) {
-        int cloneTile = tile;
-        if (tile == 0) {
-            cloneTile = board.length * board.length;
-        }
-        int row = Math.round(cloneTile / dimensions);
-        return row;
-    }
-
-    private int transformboardToColumn(int tile, int row) {
-        int cloneTile = tile;
-        if (tile == 0) {
-            cloneTile = board.length * board.length;
-        }
-        return cloneTile - dimensions * row - 1;
     }
 
     private int[][] cloneBoard() {
