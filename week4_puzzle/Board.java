@@ -1,3 +1,4 @@
+import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 
 import java.util.ArrayList;
@@ -93,9 +94,17 @@ public class Board {
 
     // all neighboring boards
     public Iterable<Board> neighbors() {
+        int row = 0;
+        int col = 0;
         List<Board> q = new ArrayList<Board>();
-        int row = dimensions - 1;
-        int col = dimensions - 1;
+        for (int i = 0; i < dimensions; i++) {
+            for (int j = 0; j < dimensions; j++) {
+                if (board[i][j] == 0) {
+                    row = i;
+                    col = j;
+                }
+            }
+        }
         if (col > 0) {
             int[][] leftBoard = this.cloneBoard();
             exch(leftBoard, row, col, row, col - 1);
@@ -111,7 +120,7 @@ public class Board {
             exch(topBoard, row, col, row - 1, col);
             q.add(new Board(topBoard));
         }
-        if (row > this.board.length - 1) {
+        if (row < this.board.length - 1) {
             int[][] bottomBoard = this.cloneBoard();
             exch(bottomBoard, row, col, row + 1, col);
             q.add(new Board(bottomBoard));
@@ -159,9 +168,12 @@ public class Board {
 
     // unit testing (not graded)
     public static void main(String[] args) {
-        int[][] array = {{0, 1, 3}, {4, 2, 5}, {7, 8, 6}};
+        int[][] array = {{0, 3}, {1, 2}};
         Board testBoard = new Board(array);
         System.out.println(testBoard.toString());
+        for (Board board : testBoard.neighbors()) {
+            StdOut.println(board.toString());
+        }
         System.out.println(testBoard.hamming());
         System.out.println(testBoard.manhattan());
     }
