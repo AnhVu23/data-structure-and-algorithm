@@ -76,7 +76,7 @@ public class Board {
         boolean isEqual = true;
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
-                if ((i == dimensions - 1 && j == dimensions - 1 && board[i][j] != 0) || (board[i][j] != i * dimensions + j + 1)) {
+                if ((i == dimensions - 1 && j == dimensions - 1 && board[i][j] != 0) && (board[i][j] != i * dimensions + j + 1)) {
                     isEqual = false;
                 }
             }
@@ -168,12 +168,10 @@ public class Board {
 
     // unit testing (not graded)
     public static void main(String[] args) {
-        int[][] array = {{0, 3}, {1, 2}};
+        int[][] array = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 0}};
         Board testBoard = new Board(array);
+        StdOut.println(testBoard.isGoal());
         System.out.println(testBoard.toString());
-        for (Board board : testBoard.neighbors()) {
-            StdOut.println(board.toString());
-        }
         System.out.println(testBoard.hamming());
         System.out.println(testBoard.manhattan());
     }
