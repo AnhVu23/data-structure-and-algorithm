@@ -1,5 +1,4 @@
 import edu.princeton.cs.algs4.StdOut;
-import edu.princeton.cs.algs4.StdRandom;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,18 +72,7 @@ public class Board {
 
     // is this board the goal board?
     public boolean isGoal() {
-        boolean isEqual = true;
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board.length; j++) {
-                if (i == dimensions - 1 && j == dimensions - 1 && board[i][j] != 0) {
-                    return false;
-                }
-                if (board[i][j] != i * dimensions + j + 1) {
-                    return false;
-                }
-            }
-        }
-        return isEqual;
+        return manhattan() == 0;
     }
 
     // does this board equal y?
@@ -135,29 +123,20 @@ public class Board {
 
     // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
-        int[][] twin;
-        twin = this.cloneBoard();
-        int originRow = StdRandom.uniform(dimensions);
-        int originCol = StdRandom.uniform(dimensions);
-        while (twin[originRow][originCol] == 0) {
-            originRow = StdRandom.uniform(dimensions);
-            originCol = StdRandom.uniform(dimensions);
+        int[][] twin = this.cloneBoard();
+        if (board[0][0] != 0 && board[0][1] != 0) {
+            exch(twin, 0, 0, 0, 1);
+            return new Board(twin);
+        } else {
+            exch(twin, 1, 0, 1, 1);
+            return new Board(twin);
         }
-        int newRow = StdRandom.uniform(dimensions);
-        int newCol = StdRandom.uniform(dimensions);
-        while (twin[newRow][newCol] == 0 || twin[newRow][newCol] == twin[originRow][originCol]) {
-            newRow = StdRandom.uniform(dimensions);
-            newCol = StdRandom.uniform(dimensions);
-        }
-        exch(twin, originRow, originCol, newRow, newCol);
-        return new Board(twin);
     }
 
-    private int[][] exch(int[][] a, int row1, int col1, int row2, int col2) { // exchange two elements in the array
+    private void exch(int[][] a, int row1, int col1, int row2, int col2) { // exchange two elements in the array
         int temp = a[row1][col1];
         a[row1][col1] = a[row2][col2];
         a[row2][col2] = temp;
-        return a;
     }
 
     private int[][] cloneBoard() {
@@ -173,11 +152,18 @@ public class Board {
     // unit testing (not graded)
     public static void main(String[] args) {
         int[][] array = {{1, 2, 3}, {4, 6, 5}, {7, 8, 0}};
+        int[][] testArray = {{1, 2, 3}, {4, 6, 5}, {7, 8, 0}};
+
         Board testBoard = new Board(array);
+        Board twin = testBoard.twin();
+
+        StdOut.println(twin.toString());
+        Board twin2 = twin.twin();
+        StdOut.println(twin2.toString());
+        StdOut.println(twin.equals(twin2));
         StdOut.println(testBoard.isGoal());
+        StdOut.println(testBoard.equals(new Board(testArray)));
         System.out.println(testBoard.toString());
-        System.out.println(testBoard.hamming());
-        System.out.println(testBoard.manhattan());
     }
 
 }
