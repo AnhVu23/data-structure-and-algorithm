@@ -1,10 +1,10 @@
-#The problem:
+# The problem:
 
 The 8-puzzle is a sliding puzzle that is played on a 3-by-3 grid with 8 square tiles labeled 1 through 8, plus a blank square. The goal is to rearrange the tiles so that they are in row-major order, using as few moves as possible. You are permitted to slide tiles either horizontally or vertically into the blank square. The following diagram shows a sequence of moves from an initial board (left) to the goal board (right).
 
 ![Problem image](https://coursera.cs.princeton.edu/algs4/assignments/8puzzle/4moves.png)
 
-#Solution:
+# Solution:
 
 ## A* search:
 
@@ -18,7 +18,7 @@ To solve the puzzle from a given search node on the priority queue, the total nu
 
 ![Game tree image](https://coursera.cs.princeton.edu/algs4/assignments/8puzzle/game-tree.png)
 
-#Optimizations:
+# Optimizations:
 ## Crtical optimization:
 
 A* search has one annoying feature: search nodes corresponding to the same board are enqueued on the priority queue many times (e.g., the bottom-left search node in the game-tree diagram above). To reduce unnecessary exploration of useless search nodes, when considering the neighbors of a search node, don’t enqueue a neighbor if its board is the same as the board of the previous search node in the game tree.
