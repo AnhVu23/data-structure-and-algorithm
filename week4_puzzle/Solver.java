@@ -44,7 +44,9 @@ public class Solver {
             boardList.delMin();
             boardListTwin.delMin();
             for (Board board : minNode.board.neighbors()) {
-                boardList.insert(new Node(board, minNode.moves + 1, minNode));
+                if (minNode.prev == null || !minNode.prev.board.equals(board)) {
+                    boardList.insert(new Node(board, minNode.moves + 1, minNode));
+                }
             }
             for (Board board : minNodeTwin.board.neighbors()) {
                 boardListTwin.insert(new Node(board, minNodeTwin.moves + 1, minNodeTwin));
