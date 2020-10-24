@@ -71,6 +71,7 @@ public class Solver {
             Node current = boardList.min();
             while (current.prev != null) {
                 boards.push(current.board);
+                current = current.prev;
             }
             boards.push(initial);
             return boards;
@@ -87,6 +88,7 @@ public class Solver {
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++)
                 tiles[i][j] = in.readInt();
+
         Board initial = new Board(tiles);
 
         // solve the puzzle
@@ -98,7 +100,7 @@ public class Solver {
         else {
             StdOut.println("Minimum number of moves = " + solver.moves());
             for (Board board : solver.solution())
-                StdOut.println(board);
+                StdOut.println(board.toString());
         }
     }
 }
