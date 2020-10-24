@@ -1,3 +1,5 @@
-.idea
 *.class
 *.txt
+.idea
+*.png
+*.jar
